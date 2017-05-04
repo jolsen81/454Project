@@ -14,7 +14,7 @@ import java.io.*;
 public class LargeIntegerLowestMultiple {
     private BigInteger val;
     private ArrayList<Integer> alphabet;
-    private ArrayList<Integer> aguaAlphabet;
+    private ArrayList<Integer> augAlphabet;
     private Boolean valueExits;
     
     public LargeIntegerLowestMultiple(String integer, ArrayList<Integer> alphabet){
@@ -25,21 +25,21 @@ public class LargeIntegerLowestMultiple {
     }
     
     private void createAugLang(){
-        this.aguaAlphabet = new ArrayList<>();
-        this.aguaAlphabet.add(0);
-        this.aguaAlphabet.add(2);
-        this.aguaAlphabet.add(3);
-        this.aguaAlphabet.add(4);
-        this.aguaAlphabet.add(6);
-        this.aguaAlphabet.add(7);
-        this.aguaAlphabet.add(8);
+        this.augAlphabet = new ArrayList<>();
+        this.augAlphabet.add(0);
+        this.augAlphabet.add(2);
+        this.augAlphabet.add(3);
+        this.augAlphabet.add(4);
+        this.augAlphabet.add(6);
+        this.augAlphabet.add(7);
+        this.augAlphabet.add(8);
         
         for(int i = 0; i < this.alphabet.size(); i++){
            if(this.alphabet.get(i)%2 != 0 && this.alphabet.get(i) != 3 & this.alphabet.get(i) != 7){
-               this.aguaAlphabet.add(this.alphabet.get(i));
+               this.augAlphabet.add(this.alphabet.get(i));
            }
        }
-        this.aguaAlphabet.sort(null);
+        this.augAlphabet.sort(null);
     }
     
     private void minString(){
@@ -63,4 +63,23 @@ public class LargeIntegerLowestMultiple {
     	//else return "no lowest multiple was found given alphabet"
     	
     }
+    
+    //private ArrayList<HashNode> transitions(HashNode n){
+	    //ArrayList<HashNode> trans = new ArrayList<>();
+	    
+	    //for(int i = 0; i < this.augAlphabet.size(); i++){
+	    //	HashNode temp;
+	    //	BigInteger ten = new BigInteger("10");
+	    //	BigInteger parentVal = n.stateValue();
+	    //	BigInteger alphabetVal = new BigInteger(Integer.toString(this.augAlphabet.get(i);
+	    //	BigInteger childStateVal = new BigInteger();
+	    //	childStateVal = parentVal.multiply(ten);
+	    //	childStateVal = childStateVal.add(alphabetVal);
+	    
+	    //	temp = new HashNode(childStateVal, parentVal, this.augAlphabet);
+	    // trans.add(temp);
+	    //}
+	    
+	    //return trans;
+    //}
 }
