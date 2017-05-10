@@ -97,9 +97,9 @@ public class DFASolver {
                 minString.add(0, value[pIndex]);
                 pIndex = parent[pIndex];
             }
-//            System.out.print("The smallest string is ");
+            System.out.print("The smallest string is ");
             for(int i = 0; i < minString.size(); i++){
-//                System.out.print(minString.get(i));
+                System.out.print(minString.get(i));
                 this.strLength++;
             }
         }
