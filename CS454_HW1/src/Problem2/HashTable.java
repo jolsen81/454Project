@@ -24,7 +24,7 @@ public class HashTable {
         }
     }
     
-    public Boolean update(hashNode node){
+    public Boolean update(StateNode node){
         BigInteger arrIdxBI = new BigInteger(Integer.toString(this.MAX_SIZE_ARR));
         BigInteger nodeState = node.stateValue();
         arrIdxBI = nodeState.mod(arrIdxBI);

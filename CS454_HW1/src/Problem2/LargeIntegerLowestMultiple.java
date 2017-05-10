@@ -50,14 +50,14 @@ public class LargeIntegerLowestMultiple {
     	//put hashtable here: each node will need a closed boolean, parent node value and the alphabet value that resulted for that state
     	
     	//initialize a starting hashnode that starts with zero
-        hashNode v = new hashNode(new BigInteger("0"), null, this.augAlphabet, 0, 0, val.toString().length());
-        ArrayList<hashNode> openSet = this.transitions(v);
+        StateNode v = new StateNode(new BigInteger("0"), null, this.augAlphabet, 0, 0, val.toString().length());
+        ArrayList<StateNode> openSet = this.transitions(v);
         Collections.sort(openSet);
 //    	//Pop front of open set into hashnode v, change to closed
 //        
         v = openSet.remove(0);
         v.setClosed();
-        ArrayList<hashNode> temp = this.transitions(v);
+        ArrayList<StateNode> temp = this.transitions(v);
                 for(int i = 0; i < temp.size(); i++){
                     openSet.add(temp.get(i));
                 }
@@ -102,11 +102,11 @@ public class LargeIntegerLowestMultiple {
     	
     }
     
-    private ArrayList<hashNode> transitions(hashNode n){
-	    ArrayList<hashNode> trans = new ArrayList<>();
+    private ArrayList<StateNode> transitions(StateNode n){
+	    ArrayList<StateNode> trans = new ArrayList<>();
 	    
 	    for(int i = 0; i < this.alphabet.size(); i++){
-	    	hashNode temp;
+	    	StateNode temp;
 	    	BigInteger ten = new BigInteger("10");
 	    	BigInteger parentVal = n.stateValue();
 	    	BigInteger alphabetVal = new BigInteger(Integer.toString(this.alphabet.get(i)));
@@ -115,7 +115,7 @@ public class LargeIntegerLowestMultiple {
 	    	childStateVal = childStateVal.add(alphabetVal);
                 childStateVal = childStateVal.mod(this.val);
 	    
-	    	temp = new hashNode(childStateVal, n, this.augAlphabet, n.cost(), 
+	    	temp = new StateNode(childStateVal, n, this.augAlphabet, n.cost(), 
                         this.alphabet.get(i), this.val.toString().length());
                 
                 if(!this.hTable.update(temp)){
@@ -126,13 +126,13 @@ public class LargeIntegerLowestMultiple {
 	    return trans;
     }
     
-    private void backTrace(hashNode n){
+    private void backTrace(StateNode n){
         if(n.parentStateValue() == null){
             System.out.print("0");
             return;
         }
         ArrayList <Integer> string = new ArrayList<>();
-        hashNode temp = n;
+        StateNode temp = n;
         while(temp.parentStateValue() != null){
             string.add(0, temp.alpha());
             temp = temp.parentStateValue();

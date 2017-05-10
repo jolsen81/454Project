@@ -1,15 +1,15 @@
 
-// hashNode class for our hash table
+// StateNode class for our hash table
 package Problem2;
 import java.math.BigInteger;
 import java.util.*;
 //import java.util.ArrayList;
 
-public class hashNode implements Comparable{
+public class StateNode implements Comparable{
 
   // class member variables
   private BigInteger childStateValue;
-  private hashNode parentValue;
+  private StateNode parentValue;
   private ArrayList <Integer> augmentedAlphabet;
   private Boolean closed;
   private int fOfN;
@@ -18,7 +18,7 @@ public class hashNode implements Comparable{
 
 
   // constructor
-  public hashNode(BigInteger cSV, hashNode pV, ArrayList <Integer> augAlph, int cost, int alpha, int minStrLength){
+  public StateNode(BigInteger cSV, StateNode pV, ArrayList <Integer> augAlph, int cost, int alpha, int minStrLength){
     this.childStateValue = cSV;
     this.parentValue = pV;
     this.augmentedAlphabet = augAlph;
@@ -32,11 +32,11 @@ public class hashNode implements Comparable{
       return this.childStateValue;
   }
   
-  public hashNode parentStateValue(){
+  public StateNode parentStateValue(){
       return this.parentValue;
   }
   
-  public void setParentStateValue(hashNode newP){
+  public void setParentStateValue(StateNode newP){
       this.parentValue = newP;
   }
   
@@ -74,7 +74,7 @@ public class hashNode implements Comparable{
   
   @Override
   public int compareTo(Object o){
-      hashNode hNode = (hashNode) o;
+      StateNode hNode = (StateNode) o;
       if(this.fOfN != hNode.fOfN){
           return this.fOfN - hNode.fOfN;
       }

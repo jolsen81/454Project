@@ -12,14 +12,14 @@ import java.util.*;
  */
 public class HashListItem {
     HashListItem next;
-    ArrayList<hashNode> nodeArray;
+    ArrayList<StateNode> nodeArray;
     
     public HashListItem(){
         HashListItem next = null;
         nodeArray =  new ArrayList<>();
     }
     
-    public Boolean update(hashNode node, int atListItem){
+    public Boolean update(StateNode node, int atListItem){
         //Move through the list to find where node can be placed if not at last item
         if(atListItem > 0){
             //If destination is beyond the end of the list, extend the list
@@ -32,7 +32,7 @@ public class HashListItem {
         return this.update(node);
     }
     
-    private Boolean update(hashNode node){
+    private Boolean update(StateNode node){
         if(this.nodeArray.isEmpty()){
             this.nodeArray.add(node);
             //indicate that this node is not in the table
