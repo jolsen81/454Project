@@ -10,21 +10,19 @@ public class StateNode implements Comparable{
   // class member variables
   private BigInteger childStateValue;
   private StateNode parentValue;
-  private ArrayList <Integer> augmentedAlphabet;
   private Boolean closed;
-  private int fOfN;
-  private int cost;
+  private BigInteger fOfN;
+  private BigInteger cost;
   private int alpha; //This is the alphabet character that created this state
 
 
   // constructor
-  public StateNode(BigInteger cSV, StateNode pV, ArrayList <Integer> augAlph, int cost, int alpha, int minStrLength){
+  public StateNode(BigInteger cSV, StateNode pV, BigInteger cost, int alpha){
     this.childStateValue = cSV;
     this.parentValue = pV;
-    this.augmentedAlphabet = augAlph;
     this.closed = false;
-    this.cost = cost + 1;
-    this.fOfN = cost;// + (minStrLength - this.childStateValue.toString().length());
+    this.cost = cost.add(new BigInteger("1"));
+    this.fOfN = this.cost;
     this.alpha = alpha;
   }
   
@@ -44,19 +42,19 @@ public class StateNode implements Comparable{
       return this.closed;
   }
   
-  public int cost(){
+  public BigInteger cost(){
       return this.cost;
   }
   
-  public void setCost(int newCost){
+  public void setCost(BigInteger newCost){
       this.fOfN = newCost;
   }
   
-  public int fOfN(){
+  public BigInteger fOfN(){
       return this.fOfN;
   }
   
-  public void setFOfN(int newF){
+  public void setFOfN(BigInteger newF){
       this.fOfN = newF;
   }
   
@@ -75,8 +73,8 @@ public class StateNode implements Comparable{
   @Override
   public int compareTo(Object o){
       StateNode hNode = (StateNode) o;
-      if(this.fOfN != hNode.fOfN){
-          return this.fOfN - hNode.fOfN;
+      if(!this.fOfN.equals(hNode)){
+          return this.fOfN.compareTo(hNode.fOfN);
       }
       
       return this.alpha - hNode.alpha;
