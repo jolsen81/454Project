@@ -24,7 +24,7 @@ public class HashListItem {
     public Boolean update(StateNode node){
         if(this.nodeArray.isEmpty()){
             this.nodeArray.add(node);
-            //indicate that this node is not in the table
+            //indicate that this node was not in the table
             return false;
         }
         
@@ -41,8 +41,6 @@ public class HashListItem {
         while(low <= high){
             //caclulate mid point
             int mid = (low+high)/2;
-            
-            
             
             //if stateValue found, the cost is less than the currently stored
             //value in the hash list item, and the state hasn't been closed, then update
@@ -70,9 +68,11 @@ public class HashListItem {
             
             if(low > high){
                 //node not found
+                //valToFind > current; insert 1 more index value up
                 if(this.nodeArray.get(mid).stateValue().compareTo(valToFind) == -1){
                     this.nodeArray.add(mid+1, node);
                 }
+                //else, push into current index
                 else{
                     this.nodeArray.add(mid, node);
                 }
