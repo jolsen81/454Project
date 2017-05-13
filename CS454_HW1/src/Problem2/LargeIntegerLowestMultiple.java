@@ -17,13 +17,15 @@ public class LargeIntegerLowestMultiple {
     private ArrayList<Integer> augAlphabet;
     private Boolean valueExits;
     private HashTable hTable;
+    private BigInteger numStates;
     
     public LargeIntegerLowestMultiple(String integer, ArrayList<Integer> alphabet){
         this.val = new BigInteger(integer);
         this.alphabet = alphabet;
         this.alphabet.sort(null);
         this.createAugLang();
-        this.hTable = new HashTable();
+        this.hTable = new HashTable(this.val);
+        this.numStates = new BigInteger("0");
         this.minString();
     }
     
@@ -46,11 +48,8 @@ public class LargeIntegerLowestMultiple {
     }
     
     private void minString(){
-    	//boolean result found
-    	//put hashtable here: each node will need a closed boolean, parent node value and the alphabet value that resulted for that state
-    	
     	//initialize a starting hashnode that starts with zero
-        StateNode v = new StateNode(new BigInteger("0"), null, this.augAlphabet, 0, 0, val.toString().length());
+        StateNode v = new StateNode(new BigInteger("0"), null, new BigInteger("0"), 0);
         ArrayList<StateNode> openSet = this.transitions(v);
         Collections.sort(openSet);
 //    	//Pop front of open set into hashnode v, change to closed
@@ -62,11 +61,6 @@ public class LargeIntegerLowestMultiple {
                     openSet.add(temp.get(i));
                 }
                 Collections.sort(openSet);
-        for(int i = 0; i < openSet.size(); i++){
-            System.out.println("State Value: " + openSet.get(i).stateValue().toString() +
-                    " alpha: " + openSet.get(i).alpha() + " c(n): " + openSet.get(i).cost());
-        }
-//        v.setClosed();
 //    	//if v is goal node, resultFound = true
         Boolean resultFound = v.stateValue().equals(new BigInteger("0"));
         if(!resultFound){
@@ -74,17 +68,10 @@ public class LargeIntegerLowestMultiple {
                 
                 v = openSet.remove(0);
                 v.setClosed();
-                if(v.stateValue().equals(new BigInteger("11"))){
-                    System.out.println("v = 11");
-                }
                 temp = this.transitions(v);
                 for(int i = 0; i < temp.size(); i++){
                     openSet.add(temp.get(i));
                 }
-//                for(int i = 0; i < openSet.size(); i++){
-//            System.out.println("State Value: " + openSet.get(i).stateValue().toString() +
-//                    " alpha: " + openSet.get(i).alpha() + " c(n): " + openSet.get(i).cost());
-//        }
                 Collections.sort(openSet);
 //                System.out.println(openSet.size());
                 resultFound = v.stateValue().equals(new BigInteger("0"));
@@ -115,10 +102,14 @@ public class LargeIntegerLowestMultiple {
 	    	childStateVal = childStateVal.add(alphabetVal);
                 childStateVal = childStateVal.mod(this.val);
 	    
-	    	temp = new StateNode(childStateVal, n, this.augAlphabet, n.cost(), 
-                        this.alphabet.get(i), this.val.toString().length());
+	    	temp = new StateNode(childStateVal, n, n.cost(), 
+                        this.alphabet.get(i));
                 
                 if(!this.hTable.update(temp)){
+                    this.numStates = this.numStates.add(new BigInteger("1"));
+                    if(this.numStates.compareTo(this.val) == 1){
+                        System.out.println("numStates is too large: " + this.numStates.toString());
+                    }
                     trans.add(temp);
                 }
 	    }
@@ -134,15 +125,19 @@ public class LargeIntegerLowestMultiple {
         ArrayList <Integer> string = new ArrayList<>();
         StateNode temp = n;
         while(temp.parentStateValue() != null){
-            string.add(0, temp.alpha());
+            string.add(temp.alpha());
             temp = temp.parentStateValue();
         }
-        
-        for(int i = 0; i < string.size(); i++){
-            System.out.print(string.get(i));
+        System.out.println();
+        System.out.println("String size: " + string.size());
+        ListIterator<Integer> iterator = string.listIterator(string.size());
+       
+        while(iterator.hasPrevious()){
+            System.out.print(iterator.previous());
         }
         
         System.out.println();
+        System.out.println("Number of states created: " + this.numStates.toString());
     }
     
     public static void main(String args[]){

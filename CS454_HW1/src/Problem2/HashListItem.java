@@ -11,44 +11,43 @@ import java.util.*;
  * @author jeremyolsen
  */
 public class HashListItem {
-    HashListItem next;
+    
+    //Array to store StateNodes that are for this HLI
     ArrayList<StateNode> nodeArray;
     
     public HashListItem(){
-        HashListItem next = null;
+        
+        //Instantiate nodeArray
         nodeArray =  new ArrayList<>();
     }
     
-    public Boolean update(StateNode node, int atListItem){
-        //Move through the list to find where node can be placed if not at last item
-        if(atListItem > 0){
-            //If destination is beyond the end of the list, extend the list
-            if(this.next == null){
-                this.next = new HashListItem();
-            }
-            return this.next.update(node, atListItem-1);
-        }
-        
-        return this.update(node);
-    }
-    
-    private Boolean update(StateNode node){
+    public Boolean update(StateNode node){
         if(this.nodeArray.isEmpty()){
             this.nodeArray.add(node);
             //indicate that this node is not in the table
             return false;
         }
         
+        //Grab the nodes state value to find it's proper placement
         BigInteger valToFind = node.stateValue();
-        int cost = node.fOfN();
         
+        //Grab the cost of getting to state
+        BigInteger cost = node.fOfN();
+        
+        //Start binary search of this.nodeArray
         int low = 0;
-        int high = this.nodeArray.size()-1;
+        int high = this.nodeArray.size() - 1;
         
         while(low <= high){
+            //caclulate mid point
             int mid = (low+high)/2;
+            
+            
+            
+            //if stateValue found, the cost is less than the currently stored
+            //value in the hash list item, and the state hasn't been closed, then update
             if(this.nodeArray.get(mid).stateValue().equals(valToFind) &&
-                    this.nodeArray.get(mid).fOfN() > cost &&
+                    this.nodeArray.get(mid).fOfN().compareTo(cost) > 1 &&
                     !this.nodeArray.get(mid).closed()){
                 this.nodeArray.get(mid).setCost(cost);
                 this.nodeArray.get(mid).setParentStateValue(node.parentStateValue());
@@ -61,18 +60,25 @@ public class HashListItem {
                 //found in table, however no update was necessary
                 return true;
             }
+            //If the stateValue > than current 
             if(this.nodeArray.get(mid).stateValue().compareTo(valToFind) == -1){
-                low = mid + 1;
+                high = mid - 1;
             }
             else{
-                high = mid -1;
+                low = mid + 1;
             }
             
             if(low > high){
                 //node not found
-                this.nodeArray.add(mid+1, node);
+                if(this.nodeArray.get(mid).stateValue().compareTo(valToFind) == -1){
+                    this.nodeArray.add(mid+1, node);
+                }
+                else{
+                    this.nodeArray.add(mid, node);
+                }
                 return false;
             }
+            
         }
         return false;
     }
