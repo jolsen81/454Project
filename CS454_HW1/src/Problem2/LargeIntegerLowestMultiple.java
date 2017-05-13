@@ -53,90 +53,119 @@ public class LargeIntegerLowestMultiple {
         ArrayList<StateNode> openSet = this.transitions(v);
         Collections.sort(openSet);
 //    	//Pop front of open set into hashnode v, change to closed
-//        
         v = openSet.remove(0);
         v.setClosed();
+        
+        //Create transitions of v from alphabet
         ArrayList<StateNode> temp = this.transitions(v);
-                for(int i = 0; i < temp.size(); i++){
-                    openSet.add(temp.get(i));
-                }
-                Collections.sort(openSet);
+        for(int i = 0; i < temp.size(); i++){
+            openSet.add(temp.get(i));
+        }
+        
+        //Sort openSet by f(n) value
+        Collections.sort(openSet);
+        
+        
 //    	//if v is goal node, resultFound = true
         Boolean resultFound = v.stateValue().equals(new BigInteger("0"));
+        
+        //Check to see if first state it goal state, if not, keep expanding
         if(!resultFound){
             do{
-                
+                //Grab next lowest value from openSet and set to closed
                 v = openSet.remove(0);
                 v.setClosed();
+                
+                //Find transitions from v using alphabet
                 temp = this.transitions(v);
                 for(int i = 0; i < temp.size(); i++){
                     openSet.add(temp.get(i));
                 }
                 Collections.sort(openSet);
-//                System.out.println(openSet.size());
+                
+                //Check to see if current v is goal state, if so, exit while loop
                 resultFound = v.stateValue().equals(new BigInteger("0"));
             }while(!openSet.isEmpty() && !resultFound);
         }
     	//if resultFound = true; begin backtrace based on parent nodes state value
     	//else return "no lowest multiple was found given alphabet"
         if(resultFound){
-            System.out.print("Minstring found: ");
+            System.out.print("Lowest multiple found: ");
             this.backTrace(v);
         }
         else{
-            System.out.println("No minimum string found");
+            System.out.println("No multiple found.");
         }
     	
     }
     
     private ArrayList<StateNode> transitions(StateNode n){
-	    ArrayList<StateNode> trans = new ArrayList<>();
-	    
-	    for(int i = 0; i < this.alphabet.size(); i++){
-	    	StateNode temp;
-	    	BigInteger ten = new BigInteger("10");
-	    	BigInteger parentVal = n.stateValue();
-	    	BigInteger alphabetVal = new BigInteger(Integer.toString(this.alphabet.get(i)));
-	    	BigInteger childStateVal = new BigInteger("0");
-	    	childStateVal = parentVal.multiply(ten);
-	    	childStateVal = childStateVal.add(alphabetVal);
-                childStateVal = childStateVal.mod(this.val);
-	    
-	    	temp = new StateNode(childStateVal, n, n.cost(), 
-                        this.alphabet.get(i));
-                
-                if(!this.hTable.update(temp)){
-                    this.numStates = this.numStates.add(new BigInteger("1"));
-                    if(this.numStates.compareTo(this.val) == 1){
-                        System.out.println("numStates is too large: " + this.numStates.toString());
-                    }
-                    trans.add(temp);
-                }
-	    }
-	    
-	    return trans;
+        
+        //Create a temporary array to hold new transition states
+        ArrayList<StateNode> trans = new ArrayList<>();
+        
+        //Set the n's state value as the parent value for all transitions
+        BigInteger parentVal = n.stateValue();
+        
+        //Loop through alphabet and create new transitions from n
+        for(int i = 0; i < this.alphabet.size(); i++){
+            //Temp StateNode for storing a transition from n
+            StateNode temp;
+            
+            //transition = ((10*parentVal)+alphabet.get)(i)%this.val
+            BigInteger ten = new BigInteger("10");
+            BigInteger alphabetVal = new BigInteger(Integer.toString(this.alphabet.get(i)));
+            BigInteger childStateVal = new BigInteger("0");
+            childStateVal = parentVal.multiply(ten);
+            childStateVal = childStateVal.add(alphabetVal);
+            childStateVal = childStateVal.mod(this.val);
+
+            //Set temps state value, parent StateNode, cost of getting to node, and 
+            //the alphabet value that caused n to reach temp
+            temp = new StateNode(childStateVal, n, n.cost(), 
+                    this.alphabet.get(i));
+
+            //If the state value of temp is not already in the hashtable, add
+            //temp to the temporary array to be added to the openset
+            if(!this.hTable.update(temp)){
+                trans.add(temp);
+            }
+            
+        }
+        //Keep track of the number of transitions states created
+        this.numStates = this.numStates.add(new BigInteger(Integer.toString(trans.size())));
+        return trans;
     }
     
     private void backTrace(StateNode n){
+        //Minimum multiple found, but is only a value of 0
         if(n.parentStateValue() == null){
             System.out.print("0");
             return;
         }
         ArrayList <Integer> string = new ArrayList<>();
         StateNode temp = n;
+        //Backtrace and collect the string of the lowest multiple from the given alphabet
+        //in reverse order
         while(temp.parentStateValue() != null){
             string.add(temp.alpha());
             temp = temp.parentStateValue();
         }
         System.out.println();
+        
+        //Tell the user the size of the string
         System.out.println("String size: " + string.size());
+        
+        //Create an iterator that starts at the back of the string array list
         ListIterator<Integer> iterator = string.listIterator(string.size());
        
+        //Print the string
         while(iterator.hasPrevious()){
             System.out.print(iterator.previous());
         }
         
         System.out.println();
+        //Show the user the number of states created during computation
         System.out.println("Number of states created: " + this.numStates.toString());
     }
     

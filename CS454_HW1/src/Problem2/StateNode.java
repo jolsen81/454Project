@@ -73,10 +73,12 @@ public class StateNode implements Comparable{
   @Override
   public int compareTo(Object o){
       StateNode hNode = (StateNode) o;
+      
+      //Sort by fOfN
       if(!this.fOfN.equals(hNode)){
           return this.fOfN.compareTo(hNode.fOfN);
       }
-      
+      //If both value are equal, sort by alphabet
       return this.alpha - hNode.alpha;
     
   }
